@@ -27,7 +27,7 @@ public class MessageHelper extends BaseController {
     public static ArrayList<TLRPC.MessageEntity> checkBlockedUserEntities(MessageObject messageObject) {
         if (messageObject.shouldBlockMessage() && messageObject.messageOwner.message != null) {
             ArrayList<TLRPC.MessageEntity> entities = new ArrayList<>(messageObject.messageOwner.entities);
-            var spoiler = new TLRPC.TL_messageEntitySpoiler();
+            TLRPC.TL_messageEntitySpoiler spoiler = new TLRPC.TL_messageEntitySpoiler();
             spoiler.offset = 0;
             spoiler.length = messageObject.messageOwner.message.length();
             entities.add(spoiler);

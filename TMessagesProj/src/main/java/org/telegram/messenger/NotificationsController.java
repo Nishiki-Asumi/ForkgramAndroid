@@ -2197,7 +2197,7 @@ public class NotificationsController extends BaseController {
             return null;
         }
         StringBuilder stringBuilder = new StringBuilder(text);
-        var entities = MessageHelper.checkBlockedUserEntities(messageObject);
+        ArrayList<TLRPC.MessageEntity> entities = MessageHelper.checkBlockedUserEntities(messageObject);
         for (int i = 0; i < entities.size(); i++) {
             if (entities.get(i) instanceof TLRPC.TL_messageEntitySpoiler) {
                 TLRPC.TL_messageEntitySpoiler spoiler = (TLRPC.TL_messageEntitySpoiler) entities.get(i);
