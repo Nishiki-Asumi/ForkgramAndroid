@@ -86,6 +86,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+
 public class MessageObject {
 
     public static final int MESSAGE_SEND_STATE_SENT = 0;
@@ -1220,7 +1222,7 @@ public class MessageObject {
                 backgroundChangeBounds = false;
             }
         }
-        
+
         public boolean contains(int messageId) {
             if (messages == null) {
                 return false;
@@ -5370,7 +5372,7 @@ public class MessageObject {
             } else {
                 entities = messageOwner.entities;
             }
-            return addEntitiesToText(text, entities, isOutOwner(), true, photoViewer, useManualParse);
+            return addEntitiesToText(text, MessageHelper.checkBlockedUserEntities(this), isOutOwner(), true, photoViewer, useManualParse);
         }
     }
 
@@ -7020,6 +7022,11 @@ public class MessageObject {
             }
         }
         return message.dialog_id;
+    }
+
+    public boolean shouldBlockMessage() {
+        // We always block msg from blocked users in this build
+        return MessagesController.getInstance(UserConfig.selectedAccount).blockePeers.indexOfKey(getFromChatId()) >= 0;
     }
 
     public boolean isSending() {
@@ -8914,7 +8921,7 @@ public class MessageObject {
     public static CharSequence peerNameWithIcon(int currentAccount, TLRPC.Peer peer) {
         return peerNameWithIcon(currentAccount, peer, false);
     }
-    
+
     public static CharSequence peerNameWithIcon(int currentAccount, TLRPC.Peer peer, boolean anotherChat) {
         if (peer instanceof TLRPC.TL_peerUser) {
             TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(peer.user_id);
