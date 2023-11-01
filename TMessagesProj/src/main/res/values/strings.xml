@@ -7762,7 +7762,7 @@
     <string name="AddDeleteAllUnpinnedMessagesInfo">EXPERIMENTAL.</string>
     <string name="BlockedUserIgnored">blocked</string>
     <string name="HideBlockedUserMsgs">Hide messages from blocked users</string>
-    <string name="HideBlockedUserMsgsInfo">WARNING: This is NOT real hide. Messages will be covered by spoiler and media won't be automatically downloaded.</string>
+    <string name="HideBlockedUserMsgsInfo">Messages from blocked users will be covered by spoiler.</string>
     <string name="HideSponsoredMessages">Hide sponsored messages</string>
     <string name="HideStories">Hide stories</string>
     <string name="NewMyStory">New Story</string>
