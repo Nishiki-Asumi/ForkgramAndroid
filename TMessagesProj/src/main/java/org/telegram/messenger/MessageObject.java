@@ -7265,8 +7265,8 @@ public class MessageObject {
     }
 
     public boolean isUserBlocked(long id) {
-        var messagesController = MessagesController.getInstance(UserConfig.selectedAccount);
-        var userFull = messagesController.getUserFull(id);
+        MessageController messagesController = MessagesController.getInstance(UserConfig.selectedAccount);
+        TLRPC.UserFull userFull = messagesController.getUserFull(id);
         return (userFull != null && userFull.blocked) || messagesController.blockePeers.indexOfKey(id) >= 0;
     }
 
