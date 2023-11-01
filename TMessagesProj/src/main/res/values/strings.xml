@@ -7174,8 +7174,7 @@
     <string name="AllViewers">All viewers</string>
     <string name="SortByReactions">Reactions First</string>
     <string name="SortByTime">Newest First</string>
-    <string name="StoryViewsSortDescription">Choose the order for the 
-list of viewers.</string>
+    <string name="StoryViewsSortDescription">Choose the order for the list of viewers.</string>
     <string name="NoContactsViewed">None of your contacts viewed this story.</string>
     <string name="Viewers">Viewers</string>
     <string name="StealthModeConfirmTitle">You are in Stealth Mode now</string>
@@ -7761,6 +7760,11 @@ list of viewers.</string>
     <string name="DeleteAllUnpinnedMessagesInfo">Are you sure you want **delete all unpinned messages** from this chat?</string>
     <string name="AddDeleteAllUnpinnedMessages">Add "Delete all unpinned messages" to menu</string>
     <string name="AddDeleteAllUnpinnedMessagesInfo">EXPERIMENTAL.</string>
+    <string name="BlockedUserIgnored">blocked</string>
+    <string name="HideBlockedUserMsgs">Hide messages from blocked users</string>
+    <string name="HideBlockedUserMsgsInfo">WARNING: This is NOT real hide. Messages will be covered by spoiler and media won't be automatically downloaded.</string>
+    <string name="HideSponsoredMessages">Hide sponsored messages</string>
+    <string name="HideStories">Hide stories</string>
     <string name="NewMyStory">New Story</string>
     <string name="LargePhoto">2560px for sending photos</string>
 </resources>

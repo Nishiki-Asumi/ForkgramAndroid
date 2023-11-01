@@ -336,6 +336,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+
 @SuppressWarnings("unchecked")
 public class ChatActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate, LocationActivity.LocationActivityDelegate, ChatAttachAlertDocumentLayout.DocumentSelectActivityDelegate, ChatActivityInterface, FloatingDebugProvider, InstantCameraView.Delegate {
     private final static boolean PULL_DOWN_BACK_FRAGMENT = false;
@@ -19931,7 +19933,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private int sponsoredMessagesPostsBetween;
     private boolean sponsoredMessagesAdded;
     private void addSponsoredMessages(boolean animated) {
-        if (sponsoredMessagesAdded || chatMode != 0 || !ChatObject.isChannel(currentChat) || !forwardEndReached[0] || getUserConfig().isPremium()) {
+        if (sponsoredMessagesAdded || chatMode != 0 || !ChatObject.isChannel(currentChat) || !forwardEndReached[0] || getUserConfig().isPremium() || SettingsHelper.hideSponsoredMessages()) {
             return;
         }
         MessagesController.SponsoredMessagesInfo res = getMessagesController().getSponsoredMessages(dialog_id);

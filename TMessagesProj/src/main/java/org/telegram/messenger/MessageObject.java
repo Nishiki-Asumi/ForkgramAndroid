@@ -88,6 +88,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+
 public class MessageObject {
 
     public static final int MESSAGE_SEND_STATE_SENT = 0;
@@ -422,7 +425,7 @@ public class MessageObject {
     }
 
     public boolean hasMediaSpoilers() {
-        return messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview();
+        return messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview() || shouldBlockMessage();
     }
 
     public boolean shouldDrawReactionsInLayout() {
@@ -1368,7 +1371,7 @@ public class MessageObject {
                 backgroundChangeBounds = false;
             }
         }
-        
+
         public boolean contains(int messageId) {
             if (messages == null) {
                 return false;
@@ -5519,7 +5522,7 @@ public class MessageObject {
             } else {
                 entities = messageOwner.entities;
             }
-            return addEntitiesToText(text, entities, isOutOwner(), true, photoViewer, useManualParse);
+            return addEntitiesToText(text, MessageHelper.checkBlockedUserEntities(this), isOutOwner(), true, photoViewer, useManualParse);
         }
     }
 
@@ -7246,6 +7249,25 @@ public class MessageObject {
             }
         }
         return message.dialog_id;
+    }
+
+    public boolean shouldBlockMessage() {
+        if (!SettingsHelper.hideBlockedUserMessages()) {
+            return false;
+        }
+        if (isUserBlocked(getFromChatId())) {
+            return true;
+        }
+        if (messageOwner.fwd_from == null || messageOwner.fwd_from.from_id == null) {
+            return false;
+        }
+        return isUserBlocked(MessageObject.getPeerId(messageOwner.fwd_from.from_id));
+    }
+
+    public boolean isUserBlocked(long id) {
+        var messagesController = MessagesController.getInstance(UserConfig.selectedAccount);
+        var userFull = messagesController.getUserFull(id);
+        return (userFull != null && userFull.blocked) || messagesController.blockePeers.indexOfKey(id) >= 0;
     }
 
     public boolean isSending() {
@@ -9140,7 +9162,7 @@ public class MessageObject {
     public static CharSequence peerNameWithIcon(int currentAccount, TLRPC.Peer peer) {
         return peerNameWithIcon(currentAccount, peer, !(peer instanceof TLRPC.TL_peerUser));
     }
-    
+
     public static CharSequence peerNameWithIcon(int currentAccount, TLRPC.Peer peer, boolean anotherChat) {
         if (peer instanceof TLRPC.TL_peerUser) {
             TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(peer.user_id);
