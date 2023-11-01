@@ -47,7 +47,12 @@ jobs:
           folder=TMessagesProj/src/main/res/values-$lang_code
           mkdir $folder
           mv strings.xml $folder/strings.xml
-      - name: Build.
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '11'
+      - name: Build
         run: |
           echo ${{ secrets.keystore }} | base64 -d > TMessagesProj/config/release.keystore
           
@@ -77,8 +82,8 @@ jobs:
 
           ###
           echo $ADDITIONAL_BUILD_NUMBER
-          sudo apt update
-          sudo apt install openjdk-17-jdk openjdk-17-jre ninja-build
+          # sudo apt update
+          # sudo apt install openjdk-17-jdk openjdk-17-jre ninja-build
           ./gradlew :TMessagesProj_AppFork:${{ matrix.afat }}
 
           #grep BUILD_VERSION_STRING TMessagesProj/src/main/java/org/telegram/messenger/BuildVars.java | cut -d'"' -f 2 > ver.txt
