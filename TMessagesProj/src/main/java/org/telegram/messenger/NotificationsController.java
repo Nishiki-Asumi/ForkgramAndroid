@@ -94,6 +94,8 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+
 public class NotificationsController extends BaseController {
 
     public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
@@ -1083,6 +1085,9 @@ public class NotificationsController extends BaseController {
                     }
 
                     Collections.sort(storyPushMessages, Comparator.comparingLong(n -> n.date));
+                    continue;
+                }
+                if (messageObject.shouldBlockMessage()) {
                     continue;
                 }
                 int mid = messageObject.getId();
@@ -2399,9 +2404,10 @@ public class NotificationsController extends BaseController {
         if (messageObject != null && messageObject.didSpoilLoginCode()) {
             return stringBuilder.toString();
         }
-        for (int i = 0; i < messageObject.messageOwner.entities.size(); i++) {
-            if (messageObject.messageOwner.entities.get(i) instanceof TLRPC.TL_messageEntitySpoiler) {
-                TLRPC.TL_messageEntitySpoiler spoiler = (TLRPC.TL_messageEntitySpoiler) messageObject.messageOwner.entities.get(i);
+        ArrayList<TLRPC.MessageEntity> entities = MessageHelper.checkBlockedUserEntities(messageObject);
+        for (int i = 0; i < entities.size(); i++) {
+            if (entities.get(i) instanceof TLRPC.TL_messageEntitySpoiler) {
+                TLRPC.TL_messageEntitySpoiler spoiler = (TLRPC.TL_messageEntitySpoiler) entities.get(i);
                 for (int j = 0; j < spoiler.length; j++) {
                     stringBuilder.setCharAt(spoiler.offset + j, spoilerChars[j % spoilerChars.length]);
                 }
