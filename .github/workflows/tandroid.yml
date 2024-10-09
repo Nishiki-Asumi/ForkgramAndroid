@@ -1,6 +1,12 @@
 name: Fork Client
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '!.github/workflows/tandroid.yml'
+  workflow_dispatch:
 
 jobs:
   linux:
@@ -42,6 +48,8 @@ jobs:
           echo "CHECK_UPDATES=${{ matrix.updates }}" >> $GITHUB_ENV
       - name: Build.
         run: |
+          echo ${{ secrets.keystore }} | base64 -d > TMessagesProj/config/release.keystore
+
           ###
           vars=gradle.properties
 
