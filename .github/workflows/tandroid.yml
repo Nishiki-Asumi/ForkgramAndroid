@@ -92,17 +92,6 @@ jobs:
           cp app.apk "artifact/ForkClient $(cat ver.txt)${{ matrix.name }}.apk"
           sha256sum app.apk > "artifact/ForkClient $(cat ver.txt)${{ matrix.name }}.apk.sha256"
 
-          # Upload to channel.
-          set +x
-          pip install requests tgcrypto-pyrofork Kurigram
-          cp app.apk "ForkClient $(cat ver.txt)${{ matrix.name }}.apk"
-          echo "${{ secrets.BASE64_ZIP }}" | base64 --decode > output.zip
-          unzip -j output.zip -d .
-          ls
-          python3 upload.py
-          set -x
-          ###
-
           echo "NEW_TAG_TEXT=$(cat ver.txt)" >> $GITHUB_ENV
 
           tempVer=$(cat ver.txt)
