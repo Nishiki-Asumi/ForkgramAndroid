@@ -83,6 +83,8 @@ import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+
 public class StoriesController {
 
     public final static int STATE_READ = 0;
@@ -271,6 +273,9 @@ public class StoriesController {
     }
 
     public boolean hasStories() {
+        if (SettingsHelper.hideStories()) {
+            return false;
+        }
         return (dialogListStories != null && dialogListStories.size() > 0) || hasSelfStories();
     }
 

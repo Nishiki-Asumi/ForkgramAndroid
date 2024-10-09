@@ -1608,6 +1608,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                             MediaDataController.addTextStyleRuns(message.messageOwner.entities, message.caption, msgBuilder, TextStyleSpan.FLAG_STYLE_SPOILER | TextStyleSpan.FLAG_STYLE_STRIKE);
                                             MediaDataController.addAnimatedEmojiSpans(message.messageOwner.entities, msgBuilder, currentMessagePaint == null ? null : currentMessagePaint.getFontMetricsInt());
                                         }
+                                        MediaDataController.addTextStyleRuns(message, message.caption, msgBuilder, TextStyleSpan.FLAG_STYLE_SPOILER);
                                         messageString = new SpannableStringBuilder(emoji).append(msgBuilder);
                                     }
                                 } else if (message.messageOwner.media instanceof TLRPC.TL_messageMediaPaidMedia) {

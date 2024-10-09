@@ -8072,6 +8072,11 @@
     <string name="DeleteAllUnpinnedMessagesInfo">Are you sure you want **delete all unpinned messages** from this chat?</string>
     <string name="AddDeleteAllUnpinnedMessages">Add "Delete all unpinned messages" to menu</string>
     <string name="AddDeleteAllUnpinnedMessagesInfo">EXPERIMENTAL.</string>
+    <string name="BlockedUserIgnored">blocked</string>
+    <string name="HideBlockedUserMsgs">Hide messages from blocked users</string>
+    <string name="HideBlockedUserMsgsInfo">Messages from blocked users will be covered by spoiler.</string>
+    <string name="HideSponsoredMessages">Hide sponsored messages</string>
+    <string name="HideStories">Hide stories</string>
     <string name="NewMyStory">New Story</string>
     <string name="LargePhoto">2560px for sending photos</string>
     <string name="DisableSlideToNextChannel">Disable slide to next channel</string>

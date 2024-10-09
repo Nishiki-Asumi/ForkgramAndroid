@@ -117,6 +117,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+
 public class MessagesController extends BaseController implements NotificationCenter.NotificationCenterDelegate {
 
     public int lastKnownSessionsCount;
@@ -21104,6 +21106,9 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public boolean storiesEnabled() {
+        if (SettingsHelper.hideStories()) {
+            return false;
+        }
         switch (storiesPosting) {
             case "premium":
                 return getUserConfig().isPremium();
