@@ -105,6 +105,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+
 public class MessageObject {
 
     public static final int MESSAGE_SEND_STATE_SENT = 0;
@@ -543,7 +546,7 @@ public class MessageObject {
     }
 
     public boolean hasMediaSpoilers() {
-        return !isRepostPreview && (messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview()) || isHiddenSensitive();
+        return !isRepostPreview && (messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview() || shouldBlockMessage()) || isHiddenSensitive();
     }
 
     public Boolean isSensitiveCached;
@@ -6650,7 +6653,7 @@ public class MessageObject {
             } else {
                 entities = messageOwner.entities;
             }
-            return addEntitiesToText(text, entities, isOutOwner(), true, photoViewer, useManualParse);
+            return addEntitiesToText(text, MessageHelper.checkBlockedUserEntities(this), isOutOwner(), true, photoViewer, useManualParse);
         }
     }
 
@@ -8675,6 +8678,25 @@ public class MessageObject {
             }
         }
         return message.dialog_id;
+    }
+
+    public boolean shouldBlockMessage() {
+        if (!SettingsHelper.hideBlockedUserMessages()) {
+            return false;
+        }
+        if (isUserBlocked(getFromChatId())) {
+            return true;
+        }
+        if (messageOwner.fwd_from == null || messageOwner.fwd_from.from_id == null) {
+            return false;
+        }
+        return isUserBlocked(MessageObject.getPeerId(messageOwner.fwd_from.from_id));
+    }
+    
+    public boolean isUserBlocked(long id) {
+        var messagesController = MessagesController.getInstance(UserConfig.selectedAccount);
+        var userFull = messagesController.getUserFull(id);
+        return (userFull != null && userFull.blocked) || messagesController.blockePeers.indexOfKey(id) >= 0;
     }
 
     public long getSavedDialogId() {
