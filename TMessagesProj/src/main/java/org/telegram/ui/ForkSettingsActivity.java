@@ -173,6 +173,11 @@ public class ForkSettingsActivity extends BaseFragment {
     private ArrayList<Integer> emptyRows = new ArrayList<Integer>();
     private int syncPinsRow;
 
+    // Patch
+    private int hideBlockedUserMsgs;
+    private int hideSponsoredMessages;
+    private int hideStories;
+
     private static int getIntLocale(String str) {
         try {
             try {
@@ -211,6 +216,7 @@ public class ForkSettingsActivity extends BaseFragment {
         showNotificationContent = rowCount++;
         hideBottomButton = SharedConfig.isUserOwner() ? rowCount++ : -1;
         lockPremium = rowCount++;
+        hideStories = rowCount++;
     
         emptyRows.add(rowCount++);
         sectionRows.add(rowCount++);
@@ -237,6 +243,8 @@ public class ForkSettingsActivity extends BaseFragment {
         disableSlideToNextChannel = rowCount++;
         disableRecentFilesAttachment = rowCount++;
         disableDefaultInAppBrowser = rowCount++;
+        hideBlockedUserMsgs = rowCount++;
+        hideSponsoredMessages = rowCount++;
 
         emptyRows.add(rowCount++);
         botSkipShare = rowCount++;
@@ -358,6 +366,10 @@ public class ForkSettingsActivity extends BaseFragment {
                 toggleGlobalMainSetting("disableRecentFilesAttachment", view, false);
             } else if (position == disableDefaultInAppBrowser) {
                 toggleGlobalMainSetting("disableDefaultInAppBrowser", view, false);
+            } else if (position == hideBlockedUserMsgs) {
+                toggleGlobalMainSetting("hideBlockedUserMsgs", view, false);
+            } else if (position == hideSponsoredMessages) {
+                toggleGlobalMainSetting("hideSponsoredMessages", view, false);
             } else if (position == botSkipShare) {
                 toggleGlobalMainSetting("botSkipShare", view, false);
             } else if (position == botSkipFullscreen) {
@@ -384,6 +396,8 @@ public class ForkSettingsActivity extends BaseFragment {
                 toggleGlobalMainSetting("syncPins", view, true);
             } else if (position == hideSensitiveDataRow) {
                 toggleGlobalMainSetting("hideSensitiveData", view, false);
+            } else if (position == hideStories) {
+                toggleGlobalMainSetting("hideStories", view, false);
             } else if (position == customTitleRow) {
                 final String defaultValue = "Fork Client";
                 org.telegram.messenger.forkgram.ForkDialogs.CreateFieldAlert(
@@ -511,6 +525,13 @@ public class ForkSettingsActivity extends BaseFragment {
                     } else if (position == disableDefaultInAppBrowser) {
                         String t = LocaleController.getString("DisableDefaultInAppBrowser", R.string.DisableDefaultInAppBrowser);
                         textCell.setTextAndCheck(t, preferences.getBoolean("disableDefaultInAppBrowser", false), false);
+                    } else if (position == hideBlockedUserMsgs) {
+                        String t = LocaleController.getString("HideBlockedUserMsgs", R.string.HideBlockedUserMsgs);
+                        String info = LocaleController.getString("HideBlockedUserMsgsInfo", R.string.HideBlockedUserMsgsInfo);
+                        textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("hideBlockedUserMsgs", false), true, false);
+                    } else if (position == hideSponsoredMessages) {
+                        String t = LocaleController.getString("HideSponsoredMessages", R.string.HideSponsoredMessages);
+                        textCell.setTextAndCheck(t, preferences.getBoolean("hideSponsoredMessages", false), false);
                     } else if (position == botSkipShare) {
                         String t = LocaleController.getString("BotSkipShare", R.string.BotSkipShare);
                         textCell.setTextAndCheck(t, preferences.getBoolean("botSkipShare", false), false);
@@ -553,6 +574,9 @@ public class ForkSettingsActivity extends BaseFragment {
                         String t = LocaleController.getString("HideSensitiveData", R.string.HideSensitiveData);
                         String info = LocaleController.getString("SquareAvatarsInfo", R.string.SquareAvatarsInfo);
                         textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("hideSensitiveData", false), true, false);
+                    } else if (position == hideStories) {
+                        String t = LocaleController.getString("HideStories", R.string.HideStories);
+                        textCell.setTextAndCheck(t, preferences.getBoolean("hideStories", false), false);
                     }
                     break;
                 }
@@ -586,6 +610,8 @@ public class ForkSettingsActivity extends BaseFragment {
                         || position == disableSlideToNextChannel
                         || position == disableRecentFilesAttachment
                         || position == disableDefaultInAppBrowser
+                        || position == hideBlockedUserMsgs
+                        || position == hideSponsoredMessages
                         || position == botSkipShare
                         || position == botSkipFullscreen
                         || position == lockPremium
@@ -601,7 +627,8 @@ public class ForkSettingsActivity extends BaseFragment {
                         || position == syncPinsRow
                         || position == showNotificationContent
                         || position == photoHasStickerRow
-                        || position == lastFmLoginRow;
+                        || position == lastFmLoginRow
+                        || position == hideStories;
             return fork;
         }
 
@@ -657,6 +684,8 @@ public class ForkSettingsActivity extends BaseFragment {
                 || position == disableSlideToNextChannel
                 || position == disableRecentFilesAttachment
                 || position == disableDefaultInAppBrowser
+                || position == hideBlockedUserMsgs
+                || position == hideSponsoredMessages
                 || position == botSkipShare
                 || position == botSkipFullscreen
                 || position == lockPremium
@@ -669,7 +698,8 @@ public class ForkSettingsActivity extends BaseFragment {
                 || position == disableGlobalSearch
                 || position == hideBottomButton
                 || position == showNotificationContent
-                || position == photoHasStickerRow) {
+                || position == photoHasStickerRow
+                || position == hideStories) {
                 return 3;
             } else if (sectionRows.contains(position)) {
                 return 4;
