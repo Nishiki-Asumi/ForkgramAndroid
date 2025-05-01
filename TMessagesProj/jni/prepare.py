@@ -429,4 +429,22 @@ stage('boringssl', """
     echo "Built archs: {archesStr}"
 """.format(ndk=ndkPath,archesStr=' '.join(arches)))
 
+stage('tde2e', """
+    git submodule init && git submodule update
+    git reset HEAD tde2e/ && git checkout -- tde2e/
+    cd tde2e_source && git reset --hard HEAD && cd ..
+    export NDK={ndk}
+    export NINJA_PATH=`which ninja`
+    ./build_tde2e_clang.sh "{ndk}/../.." 23.2.8568313 ./tde2e_source/example/android "{archesStr}"
+    echo "Built archs: {archesStr}"
+""".format(
+    ndk=ndkPath,
+    archesStr=' '.join(
+        'arm64-v8a' if arch == 'arm64' else
+        'armeabi-v7a' if arch == 'arm' else
+        arch
+        for arch in arches
+    )
+))
+
 runStages()
