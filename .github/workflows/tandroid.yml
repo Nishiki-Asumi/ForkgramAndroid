@@ -170,10 +170,11 @@ jobs:
           done
       - name: Create Release
         uses: softprops/action-gh-release@v0.1.15
+        if: ${{ matrix.type == 'release' }}
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
         with:
-          draft: true
+          prerelease: true
           files: |
             debug_asset/*.apk
             release_asset/*.apk
