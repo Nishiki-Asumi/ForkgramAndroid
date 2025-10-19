@@ -54,8 +54,13 @@ public class MessageHelper extends BaseController {
         if (message.messageOwner == null || message.storyItem != null) {
             return false;
         }
-        if (!NekoConfig.ignoreBlocked) {
+        if (!SettingsHelper.hideBlockedUserMessages()) {
             return false;
+        }
+        if (SettingsHelper.treatChannelMessagesAsBlocked()) {
+            if (isFromExternalChannel(message)) {
+                return true;
+            }
         }
         if (isUserBlocked(message.currentAccount, message.getFromChatId())) {
             return true;
@@ -70,5 +75,28 @@ public class MessageHelper extends BaseController {
         var messagesController = MessagesController.getInstance(currentAccount);
         var userFull = messagesController.getUserFull(id);
         return (userFull != null && userFull.blocked) || messagesController.blockePeers.indexOfKey(id) >= 0;
+    }
+
+    private static boolean isFromExternalChannel(MessageObject messageObject) {
+        if (messageObject.isFromUser()) {
+            return false;
+        }
+
+        long senderChannelId = messageObject.messageOwner.from_id.channel_id;
+        if (senderChannelId == 0) {
+            return false; 
+        }
+
+        final TLRPC.Chat currentChat = MessagesController.getInstance(messageObject.currentAccount).getChat(-messageObject.getDialogId());
+        if (currentChat == null || currentChat.migrated_to == null) {
+            return false; 
+        }
+
+        long linkedChannelId = currentChat.migrated_to.channel_id;
+        if (senderChannelId == linkedChannelId) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -13,6 +13,10 @@ public class SettingsHelper extends BaseController {
         return MessagesController.getGlobalMainSettings().getBoolean("hideBlockedUserMsgs", false);
     }
 
+    public static boolean treatChannelMessagesAsBlocked() {
+        return MessagesController.getGlobalMainSettings().getBoolean("treatChannelMessagesAsBlocked", false);
+    }
+
     public static boolean hideSponsoredMessages() {
         return MessagesController.getGlobalMainSettings().getBoolean("hideSponsoredMessages", false);
     }
