@@ -1290,8 +1290,10 @@ public class MessageObject {
             boolean checkCaption = true;
 
             captionAbove = false;
+            boolean blocked = false;
             for (int a = (reversed ? count - 1 : 0); (reversed ? a >= 0 : a < count);) {
                 MessageObject messageObject = messages.get(a);
+                blocked = blocked || messageObject.shouldBlockMessage();
                 if (a == (reversed ? count - 1 : 0)) {
                     messageObject.isOutOwnerCached = null;
                     isOut = messageObject.isOutOwner();
@@ -1656,6 +1658,7 @@ public class MessageObject {
                     }
                 }
                 MessageObject messageObject = messages.get(a);
+                messageObject.messageBlocked = blocked;
                 if (!isOut && messageObject.needDrawAvatarInternal()) {
                     if (pos.edge) {
                         if (pos.spanSize != 1000) {
@@ -1863,6 +1866,10 @@ public class MessageObject {
         TLRPC.User fromUser = null;
         if (message.from_id instanceof TLRPC.TL_peerUser) {
             fromUser = getUser(users, sUsers, message.from_id.user_id);
+        }
+
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            messageBlocked = MessageHelper.shouldBlockMessage(this);
         }
 
         updateMessageText(users, chats, sUsers, sChats);
@@ -9164,17 +9171,13 @@ public class MessageObject {
         return message.dialog_id;
     }
 
+    public Boolean messageBlocked;
+
     public boolean shouldBlockMessage() {
-        if (!SettingsHelper.hideBlockedUserMessages()) {
-            return false;
+        if (messageBlocked == null) {
+            messageBlocked = MessageHelper.shouldBlockMessage(this);
         }
-        if (isUserBlocked(getFromChatId())) {
-            return true;
-        }
-        if (messageOwner.fwd_from == null || messageOwner.fwd_from.from_id == null) {
-            return false;
-        }
-        return isUserBlocked(MessageObject.getPeerId(messageOwner.fwd_from.from_id));
+        return messageBlocked;
     }
     
     public boolean isUserBlocked(long id) {

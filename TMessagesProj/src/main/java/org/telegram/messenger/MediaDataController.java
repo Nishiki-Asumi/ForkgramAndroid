@@ -6885,7 +6885,7 @@ public class MediaDataController extends BaseController {
     }
 
     public static void addTextStyleRuns(MessageObject msg, Spannable text) {
-        addTextStyleRuns(msg.messageOwner.entities, msg.messageText, text, -1);
+        addTextStyleRuns(MessageHelper.checkBlockedUserEntities(msg), msg.messageText, text, -1);
     }
 
     public static void addTextStyleRuns(TLRPC.DraftMessage msg, Spannable text, int allowedFlags) {
@@ -6893,7 +6893,7 @@ public class MediaDataController extends BaseController {
     }
 
     public static void addTextStyleRuns(MessageObject msg, Spannable text, int allowedFlags) {
-        addTextStyleRuns(msg.messageOwner.entities, msg.messageText, text, allowedFlags);
+        addTextStyleRuns(MessageHelper.checkBlockedUserEntities(msg), msg.messageText, text, allowedFlags);
     }
 
     public static void addTextStyleRuns(MessageObject message, CharSequence messageText, Spannable text, int allowedFlags) {
