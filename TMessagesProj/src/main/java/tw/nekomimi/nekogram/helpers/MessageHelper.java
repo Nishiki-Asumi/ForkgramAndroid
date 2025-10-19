@@ -85,7 +85,7 @@ public class MessageHelper extends BaseController {
         }
 
         long senderChannelId = messageObject.messageOwner.from_id.channel_id;
-        Log.d("MessageHelper", "Sender Channel ID: " + senderChannelId);
+        Log.d("MessageHelper", "Sender Channel ID: " + senderChannelId + ", Dialog ID: " + messageObject.getDialogId() + ", Peer ID: " + MessageObject.getPeerId(messageObject.messageOwner.peer_id));
         if (senderChannelId == 0) {
             return false; 
         }
