@@ -33,11 +33,15 @@ public class MessageHelper extends BaseController {
             spoiler.offset = 0;
             spoiler.length = messageObject.messageOwner.message.length();
             entities.add(spoiler);
-            var quote = new TLRPC.TL_messageEntityBlockquote();
-            quote.offset = 0;
-            quote.length = messageObject.messageOwner.message.length();
-            quote.collapsed = true;
-            entities.add(quote);
+
+            if (SettingsHelper.collapseBlockedMessages()) {
+                var quote = new TLRPC.TL_messageEntityBlockquote();
+                quote.offset = 0;
+                quote.length = messageObject.messageOwner.message.length();
+                quote.collapsed = true;
+                entities.add(quote);
+            }
+
             return entities;
         } else {
             return original;

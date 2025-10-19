@@ -9882,6 +9882,8 @@
     <string name="BlockedUserIgnored">blocked</string>
     <string name="HideBlockedUserMsgs">Hide messages from blocked users</string>
     <string name="HideBlockedUserMsgsInfo">Messages from blocked users will be covered by spoiler.</string>
+    <string name="CollapseBlockedMsgs">Collapse blocked messages</string>
+    <string name="CollapseBlockedMsgsInfo">Messages from blocked users will be collapsed as a quote.</string>
     <string name="TreatChannelMessagesAsBlocked">Treat channel messages as blocked users</string>
     <string name="TreatChannelMessagesAsBlockedInfo">Messages from channels (except linked channels) are always treated as from blocked users.</string>
     <string name="HideSponsoredMessages">Hide sponsored messages</string>

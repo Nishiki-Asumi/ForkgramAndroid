@@ -175,6 +175,7 @@ public class ForkSettingsActivity extends BaseFragment {
 
     // Patch
     private int hideBlockedUserMsgs;
+    private int collapseBlockedMsgs;
     private int treatChannelMessagesAsBlocked;
     private int hideSponsoredMessages;
     private int hideStories;
@@ -245,6 +246,7 @@ public class ForkSettingsActivity extends BaseFragment {
         disableRecentFilesAttachment = rowCount++;
         disableDefaultInAppBrowser = rowCount++;
         hideBlockedUserMsgs = rowCount++;
+        collapseBlockedMsgs = rowCount++;
         treatChannelMessagesAsBlocked = rowCount++;
         hideSponsoredMessages = rowCount++;
 
@@ -370,6 +372,8 @@ public class ForkSettingsActivity extends BaseFragment {
                 toggleGlobalMainSetting("disableDefaultInAppBrowser", view, false);
             } else if (position == hideBlockedUserMsgs) {
                 toggleGlobalMainSetting("hideBlockedUserMsgs", view, false);
+            } else if (position == collapseBlockedMsgs) {
+                toggleGlobalMainSetting("collapseBlockedMsgs", view, false);
             } else if (position == treatChannelMessagesAsBlocked) {
                 toggleGlobalMainSetting("treatChannelMessagesAsBlocked", view, false);
             } else if (position == hideSponsoredMessages) {
@@ -533,6 +537,10 @@ public class ForkSettingsActivity extends BaseFragment {
                         String t = LocaleController.getString("HideBlockedUserMsgs", R.string.HideBlockedUserMsgs);
                         String info = LocaleController.getString("HideBlockedUserMsgsInfo", R.string.HideBlockedUserMsgsInfo);
                         textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("hideBlockedUserMsgs", false), true, false);
+                    } else if (position == collapseBlockedMsgs) {
+                        String t = LocaleController.getString("CollapseBlockedMsgs", R.string.CollapseBlockedMsgs);
+                        String info = LocaleController.getString("CollapseBlockedMsgsInfo", R.string.CollapseBlockedMsgsInfo);
+                        textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("collapseBlockedMsgs", false), true, false);
                     } else if (position == treatChannelMessagesAsBlocked) {
                         String t = LocaleController.getString("TreatChannelMessagesAsBlocked", R.string.TreatChannelMessagesAsBlocked);
                         String info = LocaleController.getString("TreatChannelMessagesAsBlockedInfo", R.string.TreatChannelMessagesAsBlockedInfo);
@@ -619,6 +627,7 @@ public class ForkSettingsActivity extends BaseFragment {
                         || position == disableRecentFilesAttachment
                         || position == disableDefaultInAppBrowser
                         || position == hideBlockedUserMsgs
+                        || position == collapseBlockedMsgs
                         || position == treatChannelMessagesAsBlocked
                         || position == hideSponsoredMessages
                         || position == botSkipShare
@@ -694,6 +703,7 @@ public class ForkSettingsActivity extends BaseFragment {
                 || position == disableRecentFilesAttachment
                 || position == disableDefaultInAppBrowser
                 || position == hideBlockedUserMsgs
+                || position == collapseBlockedMsgs
                 || position == treatChannelMessagesAsBlocked
                 || position == hideSponsoredMessages
                 || position == botSkipShare
