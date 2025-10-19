@@ -12,6 +12,11 @@ jobs:
   linux:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_MAXSIZE: "10G"
+      CCACHE_HARDLINK: "true"
     strategy:
       matrix:
         type: [debug, release]
@@ -37,6 +42,13 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ccache-stable
+          restore-keys: ccache-stable
       - uses: nttld/setup-ndk@v1.4.2
         id: setup-ndk-r21e
         with:
