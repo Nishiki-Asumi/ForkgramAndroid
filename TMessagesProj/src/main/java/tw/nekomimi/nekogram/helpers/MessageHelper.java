@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.util.Log;
+
 public class MessageHelper extends BaseController {
 
     public MessageHelper(int num) {
@@ -82,20 +84,22 @@ public class MessageHelper extends BaseController {
             return false;
         }
 
-        // long senderChannelId = messageObject.messageOwner.from_id.channel_id;
-        // if (senderChannelId == 0) {
-        //     return false; 
-        // }
+        long senderChannelId = messageObject.messageOwner.from_id.channel_id;
+        Log.d("MessageHelper", "Sender Channel ID: " + senderChannelId);
+        if (senderChannelId == 0) {
+            return false; 
+        }
 
-        // final TLRPC.Chat currentChat = MessagesController.getInstance(messageObject.currentAccount).getChat(-messageObject.getDialogId());
-        // if (currentChat == null || currentChat.migrated_to == null) {
-        //     return false; 
-        // }
+        final TLRPC.Chat currentChat = MessagesController.getInstance(messageObject.currentAccount).getChat(-messageObject.getDialogId());
+        Log.d("MessageHelper", "Current Chat: " + (currentChat != null ? currentChat.title : "null") + ", Migrated To: " + (currentChat != null && currentChat.migrated_to != null ? currentChat.migrated_to.channel_id : "null"));
+        if (currentChat == null || currentChat.migrated_to == null) {
+            return false; 
+        }
 
-        // long linkedChannelId = currentChat.migrated_to.channel_id;
-        // if (senderChannelId == linkedChannelId) {
-        //     return false;
-        // }
+        long linkedChannelId = currentChat.migrated_to.channel_id;
+        if (senderChannelId == linkedChannelId) {
+            return false;
+        }
 
         return true;
     }
