@@ -86,7 +86,7 @@ public class MessageHelper extends BaseController {
 
         long senderChannelId = messageObject.messageOwner.from_id.channel_id;
         Log.d("MessageHelper", "Sender Channel ID: " + senderChannelId + ", Dialog ID: " + messageObject.getDialogId());
-        if (senderChannelId == 0) {
+        if (senderChannelId == 0 || senderChannelId == -messageObject.getDialogId()) {
             return false; 
         }
 
