@@ -83,15 +83,18 @@ public class MessageHelper extends BaseController {
         if (messageObject.isFromUser()) {
             return false;
         }
+        
+        TLRPC.Message message = messageObject.messageOwner;
+        if (message == null || message.from_id == null || message.from_id.channel_id == 0L) {
+            return false; 
+        }
 
         long senderChannelId = messageObject.messageOwner.from_id.channel_id;
-        Log.d("MessageHelper", "Sender Channel ID: " + senderChannelId + ", Dialog ID: " + messageObject.getDialogId());
         if (senderChannelId == 0 || senderChannelId == -messageObject.getDialogId()) {
             return false; 
         }
 
         final TLRPC.ChatFull currentChat = MessagesController.getInstance(messageObject.currentAccount).getChatFull(-messageObject.getDialogId());
-        Log.d("MessageHelper", "Current Chat Id: " + (currentChat != null ? currentChat.id : "N/A") + ", Linked Chat ID: " + (currentChat != null ? currentChat.linked_chat_id : "N/A"));
         if (currentChat == null || currentChat.linked_chat_id == 0) {
             return false; 
         }
