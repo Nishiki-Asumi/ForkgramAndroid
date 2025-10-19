@@ -82,20 +82,20 @@ public class MessageHelper extends BaseController {
             return false;
         }
 
-        long senderChannelId = messageObject.messageOwner.from_id.channel_id;
-        if (senderChannelId == 0) {
-            return false; 
-        }
+        // long senderChannelId = messageObject.messageOwner.from_id.channel_id;
+        // if (senderChannelId == 0) {
+        //     return false; 
+        // }
 
-        final TLRPC.Chat currentChat = MessagesController.getInstance(messageObject.currentAccount).getChat(-messageObject.getDialogId());
-        if (currentChat == null || currentChat.migrated_to == null) {
-            return false; 
-        }
+        // final TLRPC.Chat currentChat = MessagesController.getInstance(messageObject.currentAccount).getChat(-messageObject.getDialogId());
+        // if (currentChat == null || currentChat.migrated_to == null) {
+        //     return false; 
+        // }
 
-        long linkedChannelId = currentChat.migrated_to.channel_id;
-        if (senderChannelId == linkedChannelId) {
-            return false;
-        }
+        // long linkedChannelId = currentChat.migrated_to.channel_id;
+        // if (senderChannelId == linkedChannelId) {
+        //     return false;
+        // }
 
         return true;
     }
