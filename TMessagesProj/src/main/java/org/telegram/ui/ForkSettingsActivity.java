@@ -182,6 +182,11 @@ public class ForkSettingsActivity extends BaseFragment {
     private ArrayList<Integer> emptyRows = new ArrayList<Integer>();
     private int syncPinsRow;
 
+    // Patch
+    private int hideBlockedUserMsgs;
+    private int collapseBlockedMsgs;
+    private int treatChannelMessagesAsBlocked;
+
     private int disableUnifiedPushRow;
 
     private static int getIntLocale(String str) {
@@ -415,6 +420,9 @@ public class ForkSettingsActivity extends BaseFragment {
         disableDefaultInAppBrowser = rowCount++;
         disablePlayVisibleVideoOnVolumeRow = rowCount++;
         voiceQualityRow = rowCount++;
+        hideBlockedUserMsgs = rowCount++;
+        collapseBlockedMsgs = rowCount++;
+        treatChannelMessagesAsBlocked = rowCount++;
 
         emptyRows.add(rowCount++);
         botSkipShare = rowCount++;
@@ -538,6 +546,12 @@ public class ForkSettingsActivity extends BaseFragment {
                 toggleGlobalMainSetting("disableRecentFilesAttachment", view, false);
             } else if (position == disableDefaultInAppBrowser) {
                 toggleGlobalMainSetting("disableDefaultInAppBrowser", view, org.telegram.messenger.BuildConfig.SKIP_INTERNAL_BROWSER_BY_DEFAULT);
+            } else if (position == hideBlockedUserMsgs) {
+                toggleGlobalMainSetting("hideBlockedUserMsgs", view, false);
+            } else if (position == collapseBlockedMsgs) {
+                toggleGlobalMainSetting("collapseBlockedMsgs", view, false);
+            } else if (position == treatChannelMessagesAsBlocked) {
+                toggleGlobalMainSetting("treatChannelMessagesAsBlocked", view, false);
             } else if (position == disablePlayVisibleVideoOnVolumeRow) {
                 toggleGlobalMainSetting("disablePlayVisibleVideoOnVolume", view, false);
             } else if (position == botSkipShare) {
@@ -715,6 +729,18 @@ public class ForkSettingsActivity extends BaseFragment {
                     } else if (position == disablePlayVisibleVideoOnVolumeRow) {
                         String t = "Disable play video on volume change";
                         textCell.setTextAndCheck(t, preferences.getBoolean("disablePlayVisibleVideoOnVolume", false), false);
+                    } else if (position == hideBlockedUserMsgs) {
+                        String t = LocaleController.getString("HideBlockedUserMsgs", R.string.HideBlockedUserMsgs);
+                        String info = LocaleController.getString("HideBlockedUserMsgsInfo", R.string.HideBlockedUserMsgsInfo);
+                        textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("hideBlockedUserMsgs", false), true, false);
+                    } else if (position == collapseBlockedMsgs) {
+                        String t = LocaleController.getString("CollapseBlockedMsgs", R.string.CollapseBlockedMsgs);
+                        String info = LocaleController.getString("CollapseBlockedMsgsInfo", R.string.CollapseBlockedMsgsInfo);
+                        textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("collapseBlockedMsgs", false), true, false);
+                    } else if (position == treatChannelMessagesAsBlocked) {
+                        String t = LocaleController.getString("TreatChannelMessagesAsBlocked", R.string.TreatChannelMessagesAsBlocked);
+                        String info = LocaleController.getString("TreatChannelMessagesAsBlockedInfo", R.string.TreatChannelMessagesAsBlockedInfo);
+                        textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("treatChannelMessagesAsBlocked", false), true, false);
                     } else if (position == botSkipShare) {
                         String t = LocaleController.getString("BotSkipShare", R.string.BotSkipShare);
                         textCell.setTextAndCheck(t, preferences.getBoolean("botSkipShare", false), false);
@@ -802,6 +828,9 @@ public class ForkSettingsActivity extends BaseFragment {
                         || position == disableRecentFilesAttachment
                         || position == disableDefaultInAppBrowser
                         || position == disablePlayVisibleVideoOnVolumeRow
+                        || position == hideBlockedUserMsgs
+                        || position == collapseBlockedMsgs
+                        || position == treatChannelMessagesAsBlocked
                         || position == botSkipShare
                         || position == botSkipFullscreen
                         || position == lockPremium
@@ -880,6 +909,9 @@ public class ForkSettingsActivity extends BaseFragment {
                 || position == disableRecentFilesAttachment
                 || position == disableDefaultInAppBrowser
                 || position == disablePlayVisibleVideoOnVolumeRow
+                || position == hideBlockedUserMsgs
+                || position == collapseBlockedMsgs
+                || position == treatChannelMessagesAsBlocked
                 || position == botSkipShare
                 || position == botSkipFullscreen
                 || position == lockPremium

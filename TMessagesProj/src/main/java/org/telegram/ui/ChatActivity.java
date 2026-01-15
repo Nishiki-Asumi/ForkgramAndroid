@@ -342,6 +342,8 @@ import me.vkryl.android.animator.FactorAnimator;
 import me.vkryl.core.BitwiseUtils;
 import me.vkryl.core.reference.ReferenceList;
 
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+
 @SuppressWarnings("unchecked")
 public class ChatActivity extends BaseFragment implements
         NotificationCenter.NotificationCenterDelegate,
@@ -22632,6 +22634,13 @@ public class ChatActivity extends BaseFragment implements
                     updateBottomOverlay();
                 }
             }
+            // Invalidate messageBlocked cache for all messages when blocked users list changes
+            if (SettingsHelper.hideBlockedUserMessages()) {
+                for (int i = 0; i < messages.size(); i++) {
+                    messages.get(i).messageBlocked = null;
+                }
+                updateVisibleRows();
+            }
         } else if (id == NotificationCenter.fileNewChunkAvailable) {
             MessageObject messageObject = (MessageObject) args[0];
             long finalSize = (Long) args[3];
@@ -34337,6 +34346,9 @@ public class ChatActivity extends BaseFragment implements
             for (int a = messages.size() - 1; a >= 0; a--) {
                 MessageObject messageObject = messages.get(a);
                 if (messageObject.getDialogId() == mergeDialogId && startMessageObject.getDialogId() != mergeDialogId) {
+                    continue;
+                }
+                if (messageObject.shouldBlockMessage()) {
                     continue;
                 }
                 if ((currentEncryptedChat == null && messageObject.getId() > messageId || currentEncryptedChat != null && messageObject.getId() < messageId) && (messageObject.isVoice() || messageObject.isRoundVideo()) && !messageObject.isVoiceOnce() && !messageObject.isRoundOnce() && (!playingUnreadMedia || messageObject.isContentUnread() && !messageObject.isOut())) {
