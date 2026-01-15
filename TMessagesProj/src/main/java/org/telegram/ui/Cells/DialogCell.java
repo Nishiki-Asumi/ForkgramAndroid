@@ -137,6 +137,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+
 public class DialogCell extends BaseCell implements StoriesListPlaceProvider.AvatarOverlaysView {
 
     public boolean drawingForBlur;
@@ -1737,9 +1739,10 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                             if (message != null) {
                                                 message.spoilLoginCode();
                                             }
-                                            MediaDataController.addTextStyleRuns(message.messageOwner.entities, message.caption, msgBuilder, TextStyleSpan.FLAG_STYLE_SPOILER | TextStyleSpan.FLAG_STYLE_STRIKE);
+                                            MediaDataController.addTextStyleRuns(MessageHelper.checkBlockedUserEntities(message), message.caption, msgBuilder, TextStyleSpan.FLAG_STYLE_SPOILER | TextStyleSpan.FLAG_STYLE_STRIKE);
                                             MediaDataController.addAnimatedEmojiSpans(message.messageOwner.entities, msgBuilder, currentMessagePaint == null ? null : currentMessagePaint.getFontMetricsInt());
                                         }
+                                        // MediaDataController.addTextStyleRuns(message, message.caption, msgBuilder, TextStyleSpan.FLAG_STYLE_SPOILER);
                                         messageString = new SpannableStringBuilder(emoji).append(msgBuilder);
                                     }
                                 } else if (message.messageOwner.media instanceof TLRPC.TL_messageMediaPaidMedia) {
@@ -5563,7 +5566,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 if (message != null) {
                     message.spoilLoginCode();
                 }
-                MediaDataController.addTextStyleRuns(message.messageOwner.entities, mess, msgBuilder, TextStyleSpan.FLAG_STYLE_SPOILER | TextStyleSpan.FLAG_STYLE_STRIKE);
+                MediaDataController.addTextStyleRuns(MessageHelper.checkBlockedUserEntities(message), mess, msgBuilder, TextStyleSpan.FLAG_STYLE_SPOILER | TextStyleSpan.FLAG_STYLE_STRIKE);
                 if (message != null && message.messageOwner != null) {
                     MediaDataController.addAnimatedEmojiSpans(message.messageOwner.entities, msgBuilder, currentMessagePaint == null ? null : currentMessagePaint.getFontMetricsInt());
                 }

@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+
 public class DownloadController extends BaseController implements NotificationCenter.NotificationCenterDelegate {
 
     public interface FileDownloadProgressListener {
@@ -623,7 +625,10 @@ public class DownloadController extends BaseController implements NotificationCe
             return true;
         }
         if (messageObject.sponsoredMedia != null) {
-            return true;
+            return false;
+        }
+        if (messageObject.shouldBlockMessage()) {
+            return false;
         }
         if (messageObject.isHiddenSensitive())
             return false;

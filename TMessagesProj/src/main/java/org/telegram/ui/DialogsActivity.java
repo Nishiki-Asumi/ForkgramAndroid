@@ -253,6 +253,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, FloatingDebugProvider {
 
     public final static boolean DISPLAY_SPEEDOMETER_IN_DOWNLOADS_SEARCH = true;
@@ -2726,6 +2728,14 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Override
     public boolean onFragmentCreate() {
         super.onFragmentCreate();
+
+        getConnectionsManager().updateDcSettings();
+        // Load all blocked peers when hide blocked messages feature is enabled
+        if (SettingsHelper.hideBlockedUserMessages()) {
+            getMessagesController().loadAllBlockedPeers();
+        } else {
+            getMessagesController().getBlockedPeers(false);
+        }
 
         if (arguments != null) {
             onlySelect = arguments.getBoolean("onlySelect", false);

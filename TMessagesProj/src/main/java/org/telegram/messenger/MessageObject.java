@@ -27,6 +27,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -114,6 +115,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.vkryl.core.BitwiseUtils;
+
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
 
 public class MessageObject {
 
@@ -614,7 +618,7 @@ public class MessageObject {
     }
 
     public boolean hasMediaSpoilers() {
-        return !isRepostPreview && (messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview()) || isHiddenSensitive();
+        return !isRepostPreview && (messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview() || shouldBlockMessage()) || isHiddenSensitive();
     }
 
     public Boolean isSensitiveCached;
@@ -1292,8 +1296,10 @@ public class MessageObject {
             boolean checkCaption = true;
 
             captionAbove = false;
+            boolean blocked = false;
             for (int a = (reversed ? count - 1 : 0); (reversed ? a >= 0 : a < count);) {
                 MessageObject messageObject = messages.get(a);
+                blocked = blocked || messageObject.shouldBlockMessage();
                 if (a == (reversed ? count - 1 : 0)) {
                     messageObject.isOutOwnerCached = null;
                     isOut = messageObject.isOutOwner();
@@ -1658,6 +1664,7 @@ public class MessageObject {
                     }
                 }
                 MessageObject messageObject = messages.get(a);
+                messageObject.messageBlocked = blocked;
                 if (!isOut && messageObject.needDrawAvatarInternal()) {
                     if (pos.edge) {
                         if (pos.spanSize != 1000) {
@@ -1865,6 +1872,10 @@ public class MessageObject {
         TLRPC.User fromUser = null;
         if (message.from_id instanceof TLRPC.TL_peerUser) {
             fromUser = getUser(users, sUsers, message.from_id.user_id);
+        }
+
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            messageBlocked = MessageHelper.shouldBlockMessage(this);
         }
 
         updateMessageText(users, chats, sUsers, sChats);
@@ -7268,6 +7279,7 @@ public class MessageObject {
     }
 
     public static boolean addEntitiesToText(CharSequence text, ArrayList<TLRPC.MessageEntity> entities, boolean out, boolean usernames, boolean photoViewer, boolean useManualParse, int allowed) {
+        entities = MessageHelper.checkBlockedEntities(this, entities);
         if (!(text instanceof Spannable)) {
             return false;
         }
@@ -9212,6 +9224,21 @@ public class MessageObject {
             }
         }
         return message.dialog_id;
+    }
+
+    public Boolean messageBlocked;
+
+    public boolean shouldBlockMessage() {
+        if (messageBlocked == null) {
+            messageBlocked = MessageHelper.shouldBlockMessage(this);
+        }
+        return messageBlocked;
+    }
+
+    public boolean isUserBlocked(long id) {
+        var messagesController = MessagesController.getInstance(UserConfig.selectedAccount);
+        var userFull = messagesController.getUserFull(id);
+        return (userFull != null && userFull.blocked) || messagesController.blockePeers.indexOfKey(id) >= 0;
     }
 
     public long getSavedDialogId() {

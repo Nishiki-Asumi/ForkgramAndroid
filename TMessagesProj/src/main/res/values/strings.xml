@@ -10255,6 +10255,13 @@
     <string name="DeleteAllUnpinnedMessagesInfo">Are you sure you want **delete all unpinned messages** from this chat?</string>
     <string name="AddDeleteAllUnpinnedMessages">Add "Delete all unpinned messages" to menu</string>
     <string name="AddDeleteAllUnpinnedMessagesInfo">EXPERIMENTAL.</string>
+    <string name="BlockedUserIgnored">blocked</string>
+    <string name="HideBlockedUserMsgs">Hide messages from blocked users</string>
+    <string name="HideBlockedUserMsgsInfo">Messages from blocked users will be covered by spoiler.</string>
+    <string name="CollapseBlockedMsgs">Collapse blocked messages</string>
+    <string name="CollapseBlockedMsgsInfo">Messages from blocked users will be collapsed as a quote.</string>
+    <string name="TreatChannelMessagesAsBlocked">Treat channel messages as blocked users</string>
+    <string name="TreatChannelMessagesAsBlockedInfo">Messages from channels (except linked channels) are always treated as from blocked users.</string>
     <string name="NewMyStory">New Story</string>
     <string name="DisableSlideToNextChannel">Disable slide to next channel</string>
     <string name="DisableRecentFilesAttachment">Disable Recent Files</string>
