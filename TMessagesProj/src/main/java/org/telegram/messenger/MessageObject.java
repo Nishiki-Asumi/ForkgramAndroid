@@ -7160,9 +7160,9 @@ public class MessageObject {
             entityItalic.offset = 0;
             entityItalic.length = text.length();
             entities.add(entityItalic);
-            return addEntitiesToText(text, entities, isOutOwner(), true, photoViewer, useManualParse);
+            return addEntitiesToText(text, MessageHelper.checkBlockedEntities(this, entities), isOutOwner(), true, photoViewer, useManualParse);
         } else {
-            return addEntitiesToText(text, getEntities(), isOutOwner(), true, photoViewer, useManualParse);
+            return addEntitiesToText(text, MessageHelper.checkBlockedEntities(this, getEntities()), isOutOwner(), true, photoViewer, useManualParse);
         }
     }
 
@@ -7279,7 +7279,6 @@ public class MessageObject {
     }
 
     public static boolean addEntitiesToText(CharSequence text, ArrayList<TLRPC.MessageEntity> entities, boolean out, boolean usernames, boolean photoViewer, boolean useManualParse, int allowed) {
-        entities = MessageHelper.checkBlockedEntities(this, entities);
         if (!(text instanceof Spannable)) {
             return false;
         }
