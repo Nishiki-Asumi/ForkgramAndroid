@@ -274,6 +274,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+
 import me.vkryl.android.animator.BoolAnimator;
 import me.vkryl.android.animator.FactorAnimator;
 
@@ -2799,6 +2801,14 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Override
     public boolean onFragmentCreate() {
         super.onFragmentCreate();
+
+        getConnectionsManager().updateDcSettings();
+        // Load all blocked peers when hide blocked messages feature is enabled
+        if (SettingsHelper.hideBlockedUserMessages()) {
+            getMessagesController().loadAllBlockedPeers();
+        } else {
+            getMessagesController().getBlockedPeers(false);
+        }
 
         if (arguments != null) {
             onlySelect = arguments.getBoolean("onlySelect", false);

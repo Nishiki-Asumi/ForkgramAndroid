@@ -133,6 +133,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import me.vkryl.core.BitwiseUtils;
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
 
 public class MessagesController extends BaseController implements NotificationCenter.NotificationCenterDelegate {
 
@@ -8930,6 +8931,57 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 loadingBlockedPeers = false;
                 getNotificationCenter().postNotificationName(NotificationCenter.blockedUsersDidLoad);
+            }
+        }));
+    }
+
+    public void loadAllBlockedPeers() {
+        if (!getUserConfig().isClientActivated() || loadingBlockedPeers) {
+            return;
+        }
+        // Skip if we already have all blocked users loaded
+        if (blockedEndReached && blockePeers.size() > 0) {
+            FileLog.d("[HideBlockedMessages] loadAllBlockedPeers: skipping, already loaded " + blockePeers.size() + " blocked peers");
+            return;
+        }
+        FileLog.d("[HideBlockedMessages] loadAllBlockedPeers: starting to load all blocked peers");
+        loadingBlockedPeers = true;
+        loadAllBlockedPeersInternal(0);
+    }
+
+    private void loadAllBlockedPeersInternal(int offset) {
+        FileLog.d("[HideBlockedMessages] loadAllBlockedPeersInternal: requesting offset=" + offset + " limit=100");
+        TLRPC.TL_contacts_getBlocked req = new TLRPC.TL_contacts_getBlocked();
+        req.offset = offset;
+        req.limit = 100;
+        getConnectionsManager().sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+            if (response != null) {
+                TLRPC.contacts_Blocked res = (TLRPC.contacts_Blocked) response;
+                FileLog.d("[HideBlockedMessages] loadAllBlockedPeersInternal: received " + res.blocked.size() + " blocked peers at offset=" + offset + ", total=" + res.count);
+                putUsers(res.users, false);
+                putChats(res.chats, false);
+                getMessagesStorage().putUsersAndChats(res.users, res.chats, true, true);
+                if (offset == 0) {
+                    blockePeers.clear();
+                }
+                totalBlockedCount = Math.max(res.count, res.blocked.size());
+                for (int a = 0, N = res.blocked.size(); a < N; a++) {
+                    TLRPC.TL_peerBlocked blocked = res.blocked.get(a);
+                    blockePeers.put(MessageObject.getPeerId(blocked.peer_id), 1);
+                }
+                if (res.blocked.size() < req.limit) {
+                    // All blocked users loaded
+                    blockedEndReached = true;
+                    loadingBlockedPeers = false;
+                    FileLog.d("[HideBlockedMessages] loadAllBlockedPeersInternal: finished loading all " + blockePeers.size() + " blocked peers");
+                    getNotificationCenter().postNotificationName(NotificationCenter.blockedUsersDidLoad);
+                } else {
+                    // Load next page
+                    loadAllBlockedPeersInternal(offset + res.blocked.size());
+                }
+            } else {
+                FileLog.d("[HideBlockedMessages] loadAllBlockedPeersInternal: request failed at offset=" + offset);
+                loadingBlockedPeers = false;
             }
         }));
     }
