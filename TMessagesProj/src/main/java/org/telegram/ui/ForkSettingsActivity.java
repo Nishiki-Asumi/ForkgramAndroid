@@ -181,6 +181,8 @@ public class ForkSettingsActivity extends BaseFragment {
     private int hideBlockedUserMsgs;
     private int collapseBlockedMsgs;
     private int treatChannelMessagesAsBlocked;
+    private int hideSponsoredMessages;
+    private int hideStories;
 
     private int disableUnifiedPushRow;
 
@@ -297,6 +299,7 @@ public class ForkSettingsActivity extends BaseFragment {
         showNotificationContent = rowCount++;
         hideBottomButton = SharedConfig.isUserOwner() ? rowCount++ : -1;
         lockPremium = rowCount++;
+        hideStories = rowCount++;
         disableUnifiedPushRow = rowCount++;
     
         emptyRows.add(rowCount++);
@@ -331,6 +334,7 @@ public class ForkSettingsActivity extends BaseFragment {
         hideBlockedUserMsgs = rowCount++;
         collapseBlockedMsgs = rowCount++;
         treatChannelMessagesAsBlocked = rowCount++;
+        hideSponsoredMessages = rowCount++;
 
         emptyRows.add(rowCount++);
         botSkipShare = rowCount++;
@@ -458,6 +462,8 @@ public class ForkSettingsActivity extends BaseFragment {
                 toggleGlobalMainSetting("collapseBlockedMsgs", view, false);
             } else if (position == treatChannelMessagesAsBlocked) {
                 toggleGlobalMainSetting("treatChannelMessagesAsBlocked", view, false);
+            } else if (position == hideSponsoredMessages) {
+                toggleGlobalMainSetting("hideSponsoredMessages", view, false);
             } else if (position == disablePlayVisibleVideoOnVolumeRow) {
                 toggleGlobalMainSetting("disablePlayVisibleVideoOnVolume", view, false);
             } else if (position == botSkipShare) {
@@ -490,6 +496,8 @@ public class ForkSettingsActivity extends BaseFragment {
                 toggleGlobalMainSetting("syncPins", view, true);
             } else if (position == hideSensitiveDataRow) {
                 toggleGlobalMainSetting("hideSensitiveData", view, false);
+            } else if (position == hideStories) {
+                toggleGlobalMainSetting("hideStories", view, false);
             } else if (position == disableUnifiedPushRow) {
                 toggleGlobalMainSetting("disableUnifiedPush", view, false);
             } else if (position == customTitleRow) {
@@ -640,6 +648,9 @@ public class ForkSettingsActivity extends BaseFragment {
                         String t = LocaleController.getString("TreatChannelMessagesAsBlocked", R.string.TreatChannelMessagesAsBlocked);
                         String info = LocaleController.getString("TreatChannelMessagesAsBlockedInfo", R.string.TreatChannelMessagesAsBlockedInfo);
                         textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("treatChannelMessagesAsBlocked", false), true, false);
+                    } else if (position == hideSponsoredMessages) {
+                        String t = LocaleController.getString("HideSponsoredMessages", R.string.HideSponsoredMessages);
+                        textCell.setTextAndCheck(t, preferences.getBoolean("hideSponsoredMessages", false), false);
                     } else if (position == botSkipShare) {
                         String t = LocaleController.getString("BotSkipShare", R.string.BotSkipShare);
                         textCell.setTextAndCheck(t, preferences.getBoolean("botSkipShare", false), false);
@@ -688,6 +699,9 @@ public class ForkSettingsActivity extends BaseFragment {
                         String t = LocaleController.getString("HideSensitiveData", R.string.HideSensitiveData);
                         String info = LocaleController.getString("SquareAvatarsInfo", R.string.SquareAvatarsInfo);
                         textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("hideSensitiveData", false), true, false);
+                    } else if (position == hideStories) {
+                        String t = LocaleController.getString("HideStories", R.string.HideStories);
+                        textCell.setTextAndCheck(t, preferences.getBoolean("hideStories", false), false);
                     } else if (position == disableUnifiedPushRow) {
                         String t = LocaleController.getString("DisableUnifiedPush", R.string.DisableUnifiedPush);
                         String info = LocaleController.getString("DisableUnifiedPushInfo", R.string.DisableUnifiedPushInfo);
@@ -729,6 +743,7 @@ public class ForkSettingsActivity extends BaseFragment {
                         || position == hideBlockedUserMsgs
                         || position == collapseBlockedMsgs
                         || position == treatChannelMessagesAsBlocked
+                        || position == hideSponsoredMessages
                         || position == botSkipShare
                         || position == botSkipFullscreen
                         || position == lockPremium
@@ -748,6 +763,7 @@ public class ForkSettingsActivity extends BaseFragment {
                         || position == photoHasStickerRow
                         || position == updateCheckIntervalRow
                         || position == lastFmLoginRow
+                        || position == hideStories
                         || position == disableUnifiedPushRow;
             return fork;
         }
@@ -808,6 +824,7 @@ public class ForkSettingsActivity extends BaseFragment {
                 || position == hideBlockedUserMsgs
                 || position == collapseBlockedMsgs
                 || position == treatChannelMessagesAsBlocked
+                || position == hideSponsoredMessages
                 || position == botSkipShare
                 || position == botSkipFullscreen
                 || position == lockPremium
@@ -823,6 +840,7 @@ public class ForkSettingsActivity extends BaseFragment {
                 || position == hideBottomButton
                 || position == showNotificationContent
                 || position == photoHasStickerRow
+                || position == hideStories
                 || position == disableUnifiedPushRow) {
                 return 3;
             } else if (sectionRows.contains(position)) {
