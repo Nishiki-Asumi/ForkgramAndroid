@@ -2,6 +2,10 @@ name: Fork Client
 
 on:
   push:
+    tags-ignore:
+      - '**'
+    branches:
+      - '**'
     paths-ignore:
       - '**.md'
       - '.github/**'
