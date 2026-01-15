@@ -74,7 +74,7 @@ public class FlagSecureReason {
     }
 
     public static boolean isSecuredNow(Window window) {
-        return currentSecureReasons != null && currentSecureReasons.get(window) != null;
+        return false;
     }
 
     public interface FlagSecureCondition {
