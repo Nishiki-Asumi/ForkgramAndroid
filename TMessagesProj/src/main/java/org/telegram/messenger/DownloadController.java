@@ -36,8 +36,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
-import tw.nekomimi.nekogram.helpers.SettingsHelper;
-
 public class DownloadController extends BaseController implements NotificationCenter.NotificationCenterDelegate {
 
     public interface FileDownloadProgressListener {
