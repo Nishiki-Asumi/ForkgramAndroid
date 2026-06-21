@@ -10220,14 +10220,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             permissons.add(Manifest.permission.GET_ACCOUNTS);
         }
         if (Build.VERSION.SDK_INT >= 33) {
-            if (activity.checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && activity.shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES)) {
+            if (activity.checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 permissons.add(Manifest.permission.READ_MEDIA_IMAGES);
             }
-            if (activity.checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED && activity.shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_VIDEO)) {
+            if (activity.checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
                 permissons.add(Manifest.permission.READ_MEDIA_VIDEO);
-            }
-            if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && activity.shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                permissons.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
         } else if ((Build.VERSION.SDK_INT <= 28 || BuildVars.NO_SCOPED_STORAGE) && activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             permissons.add(Manifest.permission.READ_EXTERNAL_STORAGE);
