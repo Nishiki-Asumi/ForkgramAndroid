@@ -1,15 +1,26 @@
 name: Fork Client
 
-on: [push]
+on:
+  push:
+    tags-ignore:
+      - '**'
+    branches:
+      - '**'
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '!.github/workflows/tandroid.yml'
+  workflow_dispatch:
 
 jobs:
   linux:
     name: Build
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-      attestations: write
+    env:
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_MAXSIZE: "10G"
+      CCACHE_HARDLINK: "true"
     strategy:
       matrix:
         type: [debug, release]
@@ -23,9 +34,12 @@ jobs:
             name: " compressed"
             updates: 1
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v6
         with:
           submodules: true
+      - name: Remove man-db
+        run: |
+          sudo apt-get remove -y man-db
       - name: Free up some disk space.
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
         with:
@@ -35,13 +49,23 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - uses: nttld/setup-ndk@v1.4.2
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639
+        with:
+          key: ccache-stable
+          restore-keys: ccache-stable
+
+      - uses: nttld/setup-ndk@afb4c9964b521afb97c864b7d40b11e6911bd410
         id: setup-ndk-r21e
         with:
           ndk-version: r21e
           link-to-sdk: true
 
-      - uses: nttld/setup-ndk@v1.4.2
+      - uses: nttld/setup-ndk@afb4c9964b521afb97c864b7d40b11e6911bd410
         id: setup-ndk-r23c
         with:
           ndk-version: r23c
@@ -50,7 +74,7 @@ jobs:
         run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;27.2.12479018"
       - name: Prepare additional build number.
         env:
-          ADDITIONAL_BUILD: ${{ secrets.ADDITIONAL_BUILD_NUMBER }}
+          ADDITIONAL_BUILD: ${{ vars.ADDITIONAL_BUILD_NUMBER }}
         run: |
           result=$((ADDITIONAL_BUILD / 10000))
           echo "ADDITIONAL_BUILD_NUMBER = $result should be between 0 and 10!"
@@ -59,6 +83,8 @@ jobs:
           echo "CHECK_UPDATES=${{ matrix.updates }}" >> $GITHUB_ENV
       - name: Build.
         run: |
+          echo ${{ secrets.keystore }} | base64 -d > TMessagesProj/config/release.keystore
+
           ###
           vars=gradle.properties
 
@@ -73,7 +99,7 @@ jobs:
           echo "ADDITIONAL_BUILD_NUMBER=$ADDITIONAL_BUILD_NUMBER" >> $vars
           echo "USER_REPO=$USER_REPO" >> $vars
           echo "CHECK_UPDATES=${{ matrix.updates }}" >> $vars
-          echo "USER_ID_OWNER=${{ secrets.USER_ID_OWNER }}" >> $vars
+          echo "USER_ID_OWNER=${{ vars.USER_ID_OWNER }}" >> $vars
           echo "UPDATE_CHANNEL_USERNAME=${{ secrets.UPDATE_CHANNEL_USERNAME }}" >> $vars
           echo "LASTFM_API_KEY=${{ secrets.LASTFM_API_KEY }}" >> $vars
           echo "LASTFM_API_SECRET=${{ secrets.LASTFM_API_SECRET }}" >> $vars
@@ -94,35 +120,14 @@ jobs:
           mkdir -p tag_asset
           cp app.apk "tag_asset/ForkClient_$(cat ver.txt)${{ matrix.name }}.apk"
 
-          # Upload to channel.
-          if [[ "${{ contains(github.event.head_commit.message, '[Release]') }}" == "true" ]]; then
-            set +x
-            pip install requests tgcrypto-pyrofork Kurigram
-            cp app.apk "ForkClient $(cat ver.txt)${{ matrix.name }}.apk"
-            echo "${{ secrets.BASE64_ZIP }}" | base64 --decode > output.zip
-            unzip -j output.zip -d .
-            ls
-            python3 upload.py
-            set -x
-          else
-            echo "Skipping channel upload (no [Release] marker in commit message)."
-          fi
-          ###
-
           echo "NEW_TAG_TEXT=$(cat ver.txt)" >> $GITHUB_ENV
 
           tempVer=$(cat ver.txt)
           tempVer=${tempVer::-2}
           echo "NEW_OFFICIAL_TAG_TEXT=$tempVer" >> $GITHUB_ENV
-      - name: Attest build provenance
-        if: ${{ contains(github.event.head_commit.message, '[Release]') }}
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: 'artifact/*.apk'
 
       - uses: actions/upload-artifact@master
         name: Upload artifact
-        if: ${{ contains(github.event.head_commit.message, '[Release]') }}
         with:
           name: ForkClient-${{ matrix.type }}
           path: artifact/
@@ -130,17 +135,16 @@ jobs:
   release:
     name: Create Release.
     needs: linux
-    if: ${{ contains(github.event.head_commit.message, '[Release]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v6
       - name: Download debug artifact
-        uses: actions/download-artifact@v4.3.0
+        uses: actions/download-artifact@v7
         with:
           name: ForkClient-debug
           path: debug_asset
       - name: Download release artifact
-        uses: actions/download-artifact@v4.3.0
+        uses: actions/download-artifact@v7
         with:
           name: ForkClient-release
           path: release_asset
@@ -150,11 +154,11 @@ jobs:
           echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
           echo "OFFICIAL_VERSION=$(cat version.txt | sed 's/..$//')" >> $GITHUB_ENV
       - name: Create Release
-        uses: softprops/action-gh-release@v0.1.15
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
         with:
-          draft: true
+          prerelease: true
           files: |
             debug_asset/*
             release_asset/*
